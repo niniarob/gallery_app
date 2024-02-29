@@ -118,8 +118,9 @@
 // export default MainPage;
 
 import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import "../styles/Main.css";
+import SearchBar from "../components/SearchBar";
 
 interface Photo {
   id: string;
@@ -210,12 +211,9 @@ const MainPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>MainPage</h1>
-
-      <Link to="/HistoryPage">Go to history page</Link>
-
-      <div>
+    <div className="main_page">
+      <SearchBar />
+      <div className="fetching_images">
         {popularPhotos.map((image: Photo) => (
           <div key={image.id}>
             <img style={{ width: "200px" }} src={image.urls.full} alt="/" />
@@ -223,7 +221,6 @@ const MainPage: React.FC = () => {
           </div>
         ))}
       </div>
-
       <div ref={bottomOfPageRef} style={{ height: "10px" }}></div>
     </div>
   );

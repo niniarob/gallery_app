@@ -1,0 +1,17 @@
+.main_page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #c3c1f1;
+  /* border: 2px solid green; */
+}
+.fetching_images {
+  /* width: 100%; */
+  /* border: 5px solid red; */
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 30px;
+}
