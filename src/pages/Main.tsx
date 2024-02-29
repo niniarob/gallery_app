@@ -214,10 +214,12 @@ const MainPage: React.FC = () => {
       <h1>MainPage</h1>
 
       <Link to="/HistoryPage">Go to history page</Link>
+      <Link to="/Search"> Search </Link>
+
 
       <div>
-        {popularPhotos.map((image: Photo) => (
-          <div key={image.id}>
+        {popularPhotos.map((image: Photo, index:number) => (
+          <div key={`${image.id}-${index}`}>
             <img style={{ width: "200px" }} src={image.urls.full} alt="/" />
             <p> {image.id}</p>
           </div>
