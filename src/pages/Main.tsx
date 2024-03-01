@@ -16,7 +16,6 @@ interface Photo {
 const MainPage = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [searchImage, setSearchImage] = useState<string>("");
 
   const accessKey = "E9JfPfaxSNELMSbFUyTtXNZ7-RqOXtxMPULaFS0BgQo";
   const perPage = 20;
@@ -29,7 +28,6 @@ const MainPage = () => {
           per_page: perPage,
           page: page,
           order_by: "popular",
-          query: searchImage,
         },
       });
       console.log(response);
@@ -37,11 +35,10 @@ const MainPage = () => {
     } catch (error) {
       console.error("Error fetching photos:", error);
     }
-  }, [accessKey, page, searchImage]);
+  }, [accessKey, page]);
 
   useEffect(() => {
     fetchPopularPhotos();
-    setPhotos([]);
   }, [fetchPopularPhotos]);
 
   const observeBottom = useCallback(
@@ -76,23 +73,16 @@ const MainPage = () => {
     };
   }, [observeBottom, photos]);
 
-  const handleSearchStringChange = (event: any) => {
-    setSearchImage(event.target.value);
-  };
-
   return (
     <div>
-      <SearchBar
-        searchImage={searchImage}
-        handleSearchStringChange={handleSearchStringChange}
-      />
+      <SearchBar />
       <div className="photos">
         {photos.map((photo: Photo, index: number) => (
           <motion.div
             variants={fadeIn("up", 0.3)}
             initial="hidden"
             whileInView={"show"}
-            // viewport={{ once: false, amount: 0.7 }}
+            viewport={{ once: false, amount: 0.7 }}
             className="photo"
             key={`${photo.id}-${index}`}
           >
