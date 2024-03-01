@@ -21,28 +21,30 @@ const MainPage = () => {
   const accessKey = "E9JfPfaxSNELMSbFUyTtXNZ7-RqOXtxMPULaFS0BgQo";
   const perPage = 20;
 
-  const fetchPopularPhotos = useCallback(async () => {
+  const fetchPhotos = useCallback(async () => {
     try {
-      const response = await axios.get("https://api.unsplash.com/photos", {
+      const response = await axios.get(`https://api.unsplash.com/photos`, {
         params: {
           client_id: accessKey,
           per_page: perPage,
           page: page,
-          order_by: "popular",
-          query: searchImage,
+          // Remove `query: searchImage` for popular photos fetching
         },
       });
-      console.log(response);
       setPhotos((prevPhotos) => [...prevPhotos, ...response.data]);
     } catch (error) {
       console.error("Error fetching photos:", error);
     }
-  }, [accessKey, page, searchImage]);
+  }, [page]); // Removed accessKey from dependency array as it's constant
 
+
+
+  
   useEffect(() => {
-    fetchPopularPhotos();
-    setPhotos([]);
-  }, [fetchPopularPhotos]);
+    if (searchImage === "") {
+      fetchPhotos();
+    }
+  }, [fetchPhotos, searchImage]);
 
   const observeBottom = useCallback(
     (node: HTMLElement | null) => {
