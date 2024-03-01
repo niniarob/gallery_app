@@ -9,7 +9,6 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  /* box-shadow: coral; */
 }
 .title {
   color: #cac7ff;
@@ -35,6 +34,3 @@
 ::placeholder {
   color: #cac7ff;
 }
-/* .search_input_history_link input{
-
-} */
