@@ -9,6 +9,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  /* box-shadow: coral; */
 }
 .title {
   color: #cac7ff;
@@ -22,6 +23,7 @@
   padding: 10px 23px;
 }
 .search_bar input {
+  width: 100%;
   background: transparent;
   font: 1;
   border: 0;

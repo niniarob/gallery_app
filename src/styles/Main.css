@@ -66,10 +66,12 @@
 } */
 
 .photos {
-  border: 1px solid red;
+  /* border: 1px solid red; */
+  background-color: #c8c8d8;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 30px;
+  padding-top: 50px;
 }
