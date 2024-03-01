@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/SearchBar.css";
-// import BackgroundImg from "./assets/BackgroundImg.jpg";
 const SearchBar = () => {
   return (
     <div className="search_input_history_link">
