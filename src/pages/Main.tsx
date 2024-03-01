@@ -1,227 +1,92 @@
-// import React, { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-// import axios from "axios";
-// interface Photo {
-//   id: string;
-//   urls: {
-//     full: string;
-//   };
-//   alt_description?: string;
-// }
-
-// const MainPage: React.FC = () => {
-//   const [popularPhotos, setPopularPhotos] = useState<Photo[]>([]);
-//   const [page, setPage] = useState<number>(1);
-//   const accesKey: string = "E9JfPfaxSNELMSbFUyTtXNZ7-RqOXtxMPULaFS0BgQo";
-//   const apiAndpoints: string = `https://api.unsplash.com/photos`;
-//   const fetchImages = async () => {
-//     try {
-//       const response = await axios.get(apiAndpoints, {
-//         params: {
-//           client_id: accesKey,
-//           page: page, // ფეიჯები იმატებს
-//           per_page: 20,
-//           order_by: "popular",
-//         },
-//       });
-//       setPopularPhotos(response.data);
-//     } catch (error) {
-//       console.log("images doesnot find:", error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h1>MainPage</h1>
-
-//       <Link to="/HistoryPage"> go history page</Link>
-
-//       <div>
-//         {popularPhotos.map((image: Photo) => (
-//           <img
-//             style={{ width: "200px" }}
-//             src={image.urls.full}
-//             alt={image.alt_description || "Image"}
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-// export default MainPage;
-
-// import React, { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-// import axios from "axios";
-
-// interface Photo {
-//   id: string;
-//   urls: {
-//     full: string;
-//   };
-//   alt_description?: string;
-// }
-
-// const MainPage: React.FC = () => {
-//   const [popularPhotos, setPopularPhotos] = useState<Photo[]>([]);
-//   const [page, setPage] = useState<number>(1);
-//   const accesKey: string = "E9JfPfaxSNELMSbFUyTtXNZ7-RqOXtxMPULaFS0BgQo";
-//   const apiAndpoints: string = `https://api.unsplash.com/photos`;
-
-//   useEffect(() => {
-//     fetchImages();
-//   }, [page]); // Fetch images when page changes
-
-//   const fetchImages = async () => {
-//     try {
-//       const response = await axios.get(apiAndpoints, {
-//         params: {
-//           client_id: accesKey,
-//           page: page,
-//           per_page: 20,
-//           //   order_by: "popular",
-//         },
-//       });
-//       // Concatenate new images with existing ones for pagination
-//       setPopularPhotos((prevPhotos) => [...prevPhotos, ...response.data]);
-//     } catch (error) {
-//       console.log("Images not found:", error);
-//     }
-//   };
-
-//   const loadMoreImages = () => {
-//     setPage((prevPage) => prevPage + 1); // Increment page count
-//   };
-
-//   return (
-//     <div>
-//       <h1>MainPage</h1>
-
-//       <Link to="/HistoryPage">Go to history page</Link>
-
-//       <div>
-//         {popularPhotos.map((image: Photo) => (
-//           <img
-//             key={image.id} // Add key prop for list items
-//             style={{ width: "200px" }}
-//             src={image.urls.full}
-//             alt={image.alt_description || "Image"}
-//           />
-//         ))}
-//       </div>
-
-//       <button onClick={loadMoreImages}>Load More</button>
-//     </div>
-//   );
-// };
-
-// export default MainPage;
-
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import "../styles/Main.css";
 import SearchBar from "../components/SearchBar";
+import "../styles/Main.css";
 
 interface Photo {
   id: string;
   urls: {
-    full: string;
+    regular: string;
   };
   alt_description?: string;
 }
 
-const MainPage: React.FC = () => {
-  const [popularPhotos, setPopularPhotos] = useState<Photo[]>([]);
+const MainPage = () => {
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
+  const perPage = 20;
+  const accessKey = "E9JfPfaxSNELMSbFUyTtXNZ7-RqOXtxMPULaFS0BgQo";
 
-  const accesKey: string = "E9JfPfaxSNELMSbFUyTtXNZ7-RqOXtxMPULaFS0BgQo";
-  const apiAndpoints: string = `https://api.unsplash.com/photos`;
-  const perPage: number = 20;
-
-  // Ref for the bottom of the page
-  const bottomOfPageRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fetchImages();
-  }, []); // Fetch images when component mounts
-
-  // Fetch images when scrolling to the bottom of the page
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        bottomOfPageRef.current &&
-        window.innerHeight + window.scrollY >= bottomOfPageRef.current.offsetTop
-      ) {
-        loadMoreImages();
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [popularPhotos]); // Add popularPhotos to dependencies to avoid re-attaching scroll event listener on every render
-
-  const fetchImages = async () => {
+  const fetchPopularPhotos = useCallback(async () => {
     try {
-      setLoading(true);
-      const response = await axios.get(apiAndpoints, {
+      const response = await axios.get("https://api.unsplash.com/photos", {
         params: {
-          client_id: accesKey,
-          page: page,
+          client_id: accessKey,
           per_page: perPage,
+          page: page,
           order_by: "popular",
         },
       });
-      console.log(response);
-      setPopularPhotos(response.data);
-      setLoading(false);
+
+      setPhotos((prevPhotos) => [...prevPhotos, ...response.data]);
     } catch (error) {
-      console.log("Images not found:", error);
+      console.error("Error fetching photos:", error);
     }
-  };
+  }, [accessKey, page]);
 
-  const loadMoreImages = async () => {
-    if (!loading) {
-      try {
-        setLoading(true);
-        const nextPage = page + 1;
-        const response = await axios.get(apiAndpoints, {
-          params: {
-            client_id: accesKey,
-            page: page,
-            per_page: perPage,
-            order_by: "popular",
-          },
-        });
-        const newPhotos = response.data.filter((photo: Photo) => {
-          return !popularPhotos.some(
-            (existingPhoto: Photo) => existingPhoto.id === photo.id
-          );
-        });
+  useEffect(() => {
+    fetchPopularPhotos();
+  }, [fetchPopularPhotos]);
 
-        setPopularPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
-        setPage(nextPage);
-        setLoading(false);
-      } catch (error) {
-        console.log("Images not found:", error);
+  const observeBottom = useCallback(
+    (node: HTMLElement | null) => {
+      if (!node) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      });
+
+      observer.observe(node);
+
+      return () => {
+        observer.disconnect();
+      };
+    },
+    [setPage]
+  );
+
+  useEffect(() => {
+    const lastPhotoElement = document.querySelector(
+      ".photo:last-child"
+    ) as HTMLElement | null;
+    observeBottom(lastPhotoElement);
+
+    return () => {
+      if (lastPhotoElement) {
+        observeBottom(lastPhotoElement);
       }
-    }
-  };
+    };
+  }, [observeBottom, photos]);
 
   return (
-    <div className="main_page">
+    <div>
       <SearchBar />
-      <div className="fetching_images">
-        {popularPhotos.map((image: Photo) => (
-          <div key={image.id}>
-            <img style={{ width: "200px" }} src={image.urls.full} alt="/" />
-            <p> {image.id}</p>
+      <div className="photos">
+        {/* <h2>Popular Photos</h2> */}
+        {photos.map((photo: Photo, index: number) => (
+          <div className="photo" key={`${photo.id}-${index}`}>
+            <img
+              style={{ width: "200px", borderRadius: "20px" }}
+              src={photo.urls.regular}
+              alt={photo.alt_description || "Photo"}
+            />
+            <p>{photo.id}</p>
           </div>
         ))}
       </div>
-      <div ref={bottomOfPageRef} style={{ height: "10px" }}></div>
+      <div id="bottom" />
     </div>
   );
 };
