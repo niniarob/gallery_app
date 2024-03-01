@@ -50,25 +50,6 @@ const MainPage = () => {
     fetchPopularPhotos();
   }, [fetchPopularPhotos]);
 
-  // const observeBottom = useCallback(
-  //   (node: HTMLElement | null) => {
-  //     if (!node) return;
-
-  //     const observer = new IntersectionObserver((entries) => {
-  //       if (entries[0].isIntersecting) {
-  //         setPage((prevPage) => prevPage + 1);
-  //       }
-  //     });
-
-  //     observer.observe(node);
-
-  //     return () => {
-  //       observer.disconnect();
-  //     };
-  //   },
-  //   [setPage]
-  // );
-
   useEffect(() => {
     const lastPhotoElement = document.querySelector(".photo:last-child");
     if (observer.current) observer.current.disconnect();
@@ -88,8 +69,6 @@ const MainPage = () => {
     if (event.key === "Enter") {
       event.preventDefault();
       fetchPopularPhotos();
-      // setPage(1);
-      // setPhotos([]);
     } else {
       setSearchImage(event.currentTarget.value);
       setPage(1);
@@ -113,12 +92,7 @@ const MainPage = () => {
             key={`${photo.id}-${index}`}
           >
             <img
-              style={{
-                width: "270px",
-                height: "170px",
-                borderRadius: "15px",
-                objectFit: "cover",
-              }}
+              className="image_styles"
               src={photo.urls.regular}
               alt={photo.alt_description || "Photo"}
             />
